@@ -12,7 +12,7 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class AdminRESTController {
 
     private UserServiceImpl userService;
@@ -23,42 +23,36 @@ public class AdminRESTController {
         this.userService = userService;
         this.roleService = roleService;
     }
-    @GetMapping("/users")
-    public ResponseEntity<List<User>> showAllUsers() {
-        List<User> users = userService.getListUsers();
-        return users != null && !users.isEmpty()
-                ? new ResponseEntity<>(users, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok().body(userService.getListUsers());
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<User> showUser(@PathVariable Long id) {
-        User user = userService.getById(id);
-        return user != null
-                ? new ResponseEntity<>(user, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(userService.getById(id));
     }
 
-    @PostMapping("/users")
+    @PostMapping
     public ResponseEntity<User> addNewUser(@RequestBody User user) {
         userService.add(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return ResponseEntity.ok().body(user);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         userService.update(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().body(user);
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         userService.delete(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/viewUser")
-    public ResponseEntity<User> showUser(Authentication auth) {
+    public ResponseEntity<User> getUserById(Authentication auth) {
         return new ResponseEntity<>((User) auth.getPrincipal(), HttpStatus.OK);
     }
 

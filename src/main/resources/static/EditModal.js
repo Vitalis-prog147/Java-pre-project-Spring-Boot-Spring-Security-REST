@@ -16,7 +16,7 @@ $('#edit').on('show.bs.modal', ev => {
 
 
 
-    await fetch("http://localhost:8080/api/roles")
+    await fetch("http://localhost:8080/api/users/roles")
         .then(res => res.json())
         .then(roles => {
             roles.forEach(role => {
