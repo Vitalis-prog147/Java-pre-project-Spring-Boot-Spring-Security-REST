@@ -8,7 +8,9 @@ import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class Init {
@@ -30,9 +32,9 @@ public class Init {
         roleService.add(role1);
         roleService.add(role2);
 
-        List<Role> roleAdmin = new ArrayList<>();
-        List<Role> roleUser = new ArrayList<>();
-        List<Role> allRoles = new ArrayList<>();
+        Set<Role> roleAdmin = new HashSet<>();
+        Set<Role> roleUser = new HashSet<>();
+        Set<Role> allRoles = new HashSet<>();
 
         allRoles.add(role1);
         allRoles.add(role2);

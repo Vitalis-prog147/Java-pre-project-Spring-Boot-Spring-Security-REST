@@ -53,16 +53,16 @@ public class AdminRESTController {
 
     @GetMapping("/viewUser")
     public ResponseEntity<User> getUserById(Authentication auth) {
-        return new ResponseEntity<>((User) auth.getPrincipal(), HttpStatus.OK);
+        return ResponseEntity.ok().body((User) auth.getPrincipal());
     }
 
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getAllRoles() {
-        return new ResponseEntity<>(userService.getListRoles(), HttpStatus.OK);
+        return ResponseEntity.ok().body(userService.getListRoles());
     }
 
     @GetMapping("/roles/{id}")
     ResponseEntity<Role> getRoleById(@PathVariable("id") long id){
-        return new ResponseEntity<>(roleService.getRoleById(id), HttpStatus.OK);
+        return ResponseEntity.ok().body(roleService.getRoleById(id));
     }
 }

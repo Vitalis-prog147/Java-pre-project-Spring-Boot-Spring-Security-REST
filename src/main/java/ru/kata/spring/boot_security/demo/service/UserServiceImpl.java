@@ -25,11 +25,6 @@ public class UserServiceImpl implements UserService {
     private final UserDaoImpl userDao;
 
     @Autowired
-    public PasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Autowired
     public UserServiceImpl(RoleDaoImpl roleDao, UserDaoImpl userDao) {
         this.roleDao = roleDao;
         this.userDao = userDao;
@@ -46,7 +41,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void add(User user) {
-        user.setPassword(bCryptPasswordEncoder().encode(user.getPassword()));
         userDao.add(user);
     }
 
@@ -64,12 +58,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void update(User user) {
-        User oldUser = getById(user.getId());
-        if (oldUser.getPassword().equals(user.getPassword()) || "".equals(user.getPassword())) {
-            user.setPassword(oldUser.getPassword());
-        } else {
-            user.setPassword(bCryptPasswordEncoder().encode(user.getPassword()));
-        }
         userDao.update(user);
     }
 

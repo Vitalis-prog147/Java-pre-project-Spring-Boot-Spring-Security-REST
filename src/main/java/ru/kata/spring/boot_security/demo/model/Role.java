@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -24,8 +25,7 @@ public class Role implements GrantedAuthority {
         this.users = users;
     }
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "roles")
+    @Transient
     private List<User> users;
 
     public Role() {

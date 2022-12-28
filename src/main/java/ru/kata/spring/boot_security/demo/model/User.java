@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -32,7 +33,7 @@ public class User implements UserDetails {
     @JoinTable(name="users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+    private Set<Role> roles;
 
     public void addRole(Role role) {
         this.roles.add(role);
@@ -46,7 +47,7 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String userName, String password, String city, String email, List<Role> roles) {
+    public User(String userName, String password, String city, String email, Set<Role> roles) {
         this.firstName = userName;
         this.password = password;
         this.city = city;
@@ -54,7 +55,7 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public User(Long id, String userName, String password, String city, String email, List<Role> roles) {
+    public User(Long id, String userName, String password, String city, String email, Set<Role> roles) {
         this.id = id;
         this.firstName = userName;
         this.password = password;
@@ -138,11 +139,11 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
