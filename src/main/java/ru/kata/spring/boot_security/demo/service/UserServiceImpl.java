@@ -1,12 +1,9 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.RoleDaoImpl;
@@ -14,9 +11,7 @@ import ru.kata.spring.boot_security.demo.dao.UserDaoImpl;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,13 +29,9 @@ public class UserServiceImpl implements UserService {
     public List<Role> getListRoles() { return roleDao.getListRoles(); }
 
     @Override
-    public List<Role> getListByRole(List<String> name) {
-        return roleDao.getListByName(name);
-    }
-
-    @Override
     @Transactional
     public void add(User user) {
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         userDao.add(user);
     }
 
@@ -74,15 +65,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User userPrimary = getByUsername(email);
-        if (userPrimary == null) {
-            throw new UsernameNotFoundException(email + " not found");
-        }
-        UserDetails user = new org.springframework.security.core.userdetails.User(userPrimary.getUsername(), userPrimary.getPassword(), ath(userPrimary.getRoles()));
-        return userPrimary;
-    }
 
-    private Collection<? extends GrantedAuthority> ath(Collection<Role> roles) {
-        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getRole()))
-                .collect(Collectors.toList());
+        if (userPrimary == null) {
+            throw new UsernameNotFoundException(String.format("User %s not found", email));
+        }
+
+        return new org.springframework.security.core.userdetails.User(userPrimary.getUsername(),
+                                                                        userPrimary.getPassword(),
+                                                                        userPrimary.getRoles());
     }
 }

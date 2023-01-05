@@ -6,8 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.model.Role;
 
-import java.util.List;
-
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -22,16 +20,6 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void add(Role role) {
         roleDao.add(role);
-    }
-
-    @Override
-    public List<Role> getListRoles() {
-        return roleDao.getListRoles();
-    }
-
-    @Override
-    public List<Role> getRolesListById(List<Long> id) {
-        return roleDao.getRolesListById(id);
     }
 
     @Override

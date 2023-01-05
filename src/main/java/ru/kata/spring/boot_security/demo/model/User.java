@@ -1,11 +1,10 @@
 package ru.kata.spring.boot_security.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -76,49 +75,6 @@ public class User implements UserDetails {
         this.firstName = userName;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isEnabled() {
-        return true;
-    }
-
     public String getCity() {
         return city;
     }
@@ -147,6 +103,19 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
     @Override
     public String toString() {
@@ -160,14 +129,48 @@ public class User implements UserDetails {
                 '}';
     }
 
-    public String getShortRoles() {
-        if (roles.toString().equals("[ROLE_USER]")) {
-            return "USER";
-        } else if (roles.toString().equals("[ROLE_ADMIN]")) {
-            return "ADMIN";
-        } else if (roles.equals(null)) {
-            return null;
-        }
-        return "ADMIN USER";
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id.equals(user.id) &&
+                firstName.equals(user.firstName) &&
+                password.equals(user.password) &&
+                city.equals(user.city) &&
+                email.equals(user.email) &&
+                roles.equals(user.roles);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, password,
+                city, email, roles);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }
