@@ -17,7 +17,10 @@ public class UserDaoImpl implements UserDao {
     public User getByName(String email) {
         return entityManager.createQuery("select u from User u join fetch u.roles where u.email = :email", User.class)
                 .setParameter("email", email)
-                .getResultList().stream().findAny().orElse(null);
+                .getResultList()
+                .stream()
+                .findAny()
+                .orElse(null);
     }
 
     @Override

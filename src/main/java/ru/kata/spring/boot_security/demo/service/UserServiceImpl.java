@@ -1,9 +1,7 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.RoleDaoImpl;
@@ -19,10 +17,13 @@ public class UserServiceImpl implements UserService {
     private final RoleDaoImpl roleDao;
     private final UserDaoImpl userDao;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public UserServiceImpl(RoleDaoImpl roleDao, UserDaoImpl userDao) {
+    public UserServiceImpl(RoleDaoImpl roleDao, UserDaoImpl userDao, PasswordEncoder passwordEncoder) {
         this.roleDao = roleDao;
         this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void add(User user) {
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword())); //внедрен енкодер в сервис (Fix #5)
         userDao.add(user);
     }
 
@@ -62,16 +63,4 @@ public class UserServiceImpl implements UserService {
         return userDao.getByName(email);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User userPrimary = getByUsername(email);
-
-        if (userPrimary == null) {
-            throw new UsernameNotFoundException(String.format("User %s not found", email));
-        }
-
-        return new org.springframework.security.core.userdetails.User(userPrimary.getUsername(),
-                                                                        userPrimary.getPassword(),
-                                                                        userPrimary.getRoles());
-    }
 }
